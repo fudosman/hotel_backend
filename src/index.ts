@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import userRoutes from "./routes/users";
@@ -21,6 +22,7 @@ async function connectDB() {
 
 async function startServer() {
   const app = express();
+  app.use(cookieParser());
 
   // Middleware
   app.use(
@@ -30,7 +32,12 @@ async function startServer() {
   ); // Morgan logging middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(cors());
+  app.use(
+    cors({
+      origin: process.env.FRONTEND_URL,
+      credentials: true,
+    })
+  );
 
   // Route handler
   app.use("/api/auth", authRoutes);
