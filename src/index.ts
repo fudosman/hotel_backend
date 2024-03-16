@@ -7,13 +7,18 @@ import morgan from "morgan";
 import userRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
 
-dotenv.config();
+const envPath =
+  process.env.DOTENV_CONFIG_PATH ||
+  (process.env.NODE_ENV === "test" ? ".env.e2e" : ".env");
+
+dotenv.config({ path: envPath });
+
 const PORT = process.env.PORT || 3000;
 
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URL!);
-    console.log("Connected to MongoDB successfully");
+    console.log("Connected to MongoDB at " + process.env.MONGO_URL);
   } catch (error) {
     console.error("Error connecting to MongoDB:", error);
     process.exit(1);
